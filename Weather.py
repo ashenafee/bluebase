@@ -1,4 +1,3 @@
-import json
 from typing import Dict
 import datetime
 from datetime import date, time
@@ -50,10 +49,15 @@ class Weather:
         return round(self._feels_like['night'] - 273.15)
 
     def get_pop(self):
-        return self._pop
+        return '{}%'.format(self._pop*100)
 
     def get_sunset_time(self):
-        return self._sunset
+        if self._sunset.hour < 12:
+            ampm = 'am'
+        else:
+            ampm = 'pm'
+        return '{} {}'.format(datetime.time(self._sunset.hour%12, self._sunset.minute,
+                             self._sunset.second), ampm)
 
     def __str__(self):
         return "Weather forecast on {}:\n\nProbability of Precipitation: {}\n" \
