@@ -1,4 +1,4 @@
-from typing import Any, List, Union
+from typing import Any, List, Union, Tuple
 
 import parsers.parse_timetable as pt
 from course.course import Course
@@ -28,9 +28,9 @@ def create_course(code: str, section: str) -> Course:
                   tuts, pras)
 
 
-def create_meetings(meeting_types, section, timetable) -> tuple[
-    Union[list[Any], list[Lecture]], Union[list[Any], list[Lecture]], Union[
-        list[Any], list[Lecture]]]:
+def create_meetings(meeting_types, section, timetable) -> Tuple[
+    Union[List[Any], List[Lecture]], Union[List[Any], List[Lecture]], Union[
+        List[Any], List[Lecture]]]:
     """Create and return list of meetings of the given type."""
     lecs = []
     tuts = []

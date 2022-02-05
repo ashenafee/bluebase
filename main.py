@@ -1,21 +1,49 @@
 import os
-import requests as requests
 
+import discord
+from discord.ext import commands
 from dotenv import load_dotenv
-from datetime import datetime
+
+import course_creator as cc
+
+client = commands.Bot(command_prefix='!')
+client.remove_command('help')
 
 load_dotenv()
-WEATHER = os.getenv("WEATHER_TOKEN")
-
-# Get weather data from API for University of Toronto
-url = f"https://api.openweathermap.org/data/2.5/onecall?lat=43.66097263251249" \
-      f"&lon=-79.3959447315859&exclude=current,minutely&appid={'a1e7432aa61d866426416d903dded9f8'}"
-
-# response = requests.get(url)
-
-ts = 1643994000
-print(datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
+TOKEN = os.getenv('DISCORD_TOKEN')
 
 
+@client.event
+async def on_connect():
+    print("Bluebase has connected to Discord.")
 
-# print(response.text)
+
+@client.event
+async def on_ready():
+    print("Bluebase is up and running.")
+    await client.change_presence(
+        activity=discord.Game(name="Type !help for a list of commands!"))
+
+
+@client.command()
+async def ping(ctx, *args):
+    """Output pong to the server."""
+    await ctx.send("Pong!")
+
+
+@client.command()
+async def add(ctx, *args):
+    """Add a course to the server."""
+    course = cc.create_course(args[0], args[1])
+    embed = discord.Embed(title=course.code, description=course.name, color=0x00ff00)
+
+    lecs = ""
+    for lec in course.lec:
+        lecs += str(lec) + "\n"
+    embed.add_field(name="Lectures", value=lecs, inline=False)
+
+    await ctx.send(embed=embed)
+
+
+# Login to the bot
+client.run(TOKEN)

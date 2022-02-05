@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 
 class Meeting:
@@ -10,7 +10,7 @@ class Meeting:
         - Meeting instructor
     """
 
-    def __init__(self, code: str, times: dict[str, List[str]],
+    def __init__(self, code: str, times: Dict[str, List[str]],
                  instructors: List[str], location: str):
         self.code = code
         self.times = []

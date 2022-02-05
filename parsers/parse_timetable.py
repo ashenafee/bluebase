@@ -1,5 +1,5 @@
 import json
-from typing import List
+from typing import List, Dict
 
 import requests
 
@@ -29,7 +29,7 @@ def get_sessions(type: str, section: str, timetable: json) -> List[str]:
         return []
 
 
-def get_times(session: str, section: str, timetable: json) -> dict[str,
+def get_times(session: str, section: str, timetable: json) -> Dict[str,
                                                                    List[str]]:
     """Get all times for a given session."""
     offering = next(filter(lambda x: section.upper() in x, timetable.keys()))
