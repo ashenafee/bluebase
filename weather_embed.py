@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
-import Weather
+import parse_weather_data as w_data
+from datetime import date
 
-TOKEN = 'YOUR_TOKEN_HERE'
-
+TOKEN = 'OTM5NTk1NDkwODY4MjE5OTE0.Yf7IfQ.2Z8FjcIXa6d9FjR3IYvuOwjfhE4'
 client = commands.Bot(command_prefix='+')
 
 
@@ -13,11 +13,12 @@ async def on_ready():
 
 
 @client.command(pass_context=True)
-async def displayembed():
-    weather_stats = Weather
+async def display(ctx):
+    today_date = date.today()
+    weather_stats = w_data.get_weather_data(today_date)
     embed = discord.Embed(
-        title='Weather',
-        description='This is your upcoming forecast at uoftsg campus',
+        title='The Weather for ' + str(today_date),
+        description=weather_stats,
         colour=discord.colour.Colour.blue()
     )
     embed.add_field()
@@ -27,7 +28,7 @@ async def displayembed():
     embed.set_author(name='Bluebot')
     embed.add_field(name='!weather', value='Here is your forecast', inline=True)
 
-    await client.run(embed=embed)
+    await ctx.run(embed=embed)
 
 client.run(TOKEN)
 
