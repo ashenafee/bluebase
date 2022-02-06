@@ -14,6 +14,14 @@ def create_course(code: str, section: str) -> Course:
     # Get course timetable
     timetable = pt.search_timetable(code)
 
+    timetable_keys = list(timetable.keys())
+    flag = False
+    for key in timetable_keys:
+        if f"-{section}-" not in key:
+            flag = True
+    if flag:
+        raise ValueError("Section not found.")
+
     # Get code of specific sessional offering
     offering = next(filter(lambda x: section.upper() in x, timetable.keys()))
 
