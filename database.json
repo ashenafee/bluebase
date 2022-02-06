@@ -1,8 +1,15 @@
 {
     "939616612758224909": [
-        "CSC148",
+        "PCL218",
+        "BCH311",
         "CHM136",
+        "CSC165",
         "CSC209"
     ],
-    "CHANNEL_ID": "COURSE_CODE"
+    "CHANNEL_ID": "COURSE_CODE",
+    "939721154166390805": [
+        "CSC209",
+        "CSC148",
+        "CSC165"
+    ]
 }
