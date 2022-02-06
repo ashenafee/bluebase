@@ -1,4 +1,10 @@
 # Bluebase
+*Your UTSG course companion.*
+
+
+![image](https://user-images.githubusercontent.com/20289287/152673250-c78c5222-7970-44b2-bb40-d993d5c29fd6.png)
+
+
 
 ## Specification
 
@@ -16,6 +22,11 @@ Since this a Discord bot, all of its functionality is available on Discord only.
 | `!info <CODE> <SECTION>`           | `CODE`: Course code (i.e. BCH311)<br/> `SECTION`: Course section (i.e. S)                                    | Shows information about a course.                            |
 | `!view <CODE> <SECTION> <MEETING>` | `CODE`: Course code (i.e. BCH311)<br/> `SECTION`: Course section (i.e. S)<br/> `MEETING`: Meeting type (i.e. LEC) | Shows information about all meetings of a type for a course. |
 | `!view_all`                        | None                                                                                                    | Shows information about all the courses in a channel.        |
+
+## What can Bluebase do?
+
+![image](https://user-images.githubusercontent.com/20289287/152673306-88a5b5a6-a451-454c-8800-81d7efe71258.png)
+
 
 ## Scenario walk-through
 
@@ -62,3 +73,8 @@ By bringing the functionality and usefulness of a course browser to an interface
 the goal of restoring the idea of what once was normal, but we came across a revelation along the way... Why not combine the two worlds we've
 grown so used to? Through restoring the sense of normalcy, and preserving the ease of online, we have the birth of **Bluebase - A bot that helps
 you organize your UofT courses**.
+
+## What's next for Bluebase?
+
+![image](https://user-images.githubusercontent.com/20289287/152673285-b182d032-829a-470c-832e-5291f1e28c91.png)
+
