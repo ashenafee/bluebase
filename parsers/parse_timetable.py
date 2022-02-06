@@ -29,6 +29,41 @@ def get_sessions(type: str, section: str, timetable: json) -> List[str]:
         return []
 
 
+def get_description(section: str, timetable: json) -> str:
+    """Get the description of a course."""
+    offering = next(filter(lambda x: section.upper() in x, timetable.keys()))
+    description = timetable[offering]["courseDescription"]
+    return description
+
+
+def get_prereqs(section: str, timetable: json) -> str:
+    """Get all prerequisites for a given course."""
+    offering = next(filter(lambda x: section.upper() in x, timetable.keys()))
+    prereqs = timetable[offering]["prerequisite"]
+    return prereqs
+
+
+def get_coreqs(section: str, timetable: json) -> List[str]:
+    """Get all corequisites for a given course."""
+    offering = next(filter(lambda x: section.upper() in x, timetable.keys()))
+    coreqs = timetable[offering]["corequisite"]
+    return coreqs
+
+
+def get_exclusions(section: str, timetable: json) -> List[str]:
+    """Get all exclusions for a given course."""
+    offering = next(filter(lambda x: section.upper() in x, timetable.keys()))
+    exclusions = timetable[offering]["exclusion"]
+    return exclusions
+
+
+def get_breadth(section: str, timetable: json) -> str:
+    """Get the breadth fulfillment of a course."""
+    offering = next(filter(lambda x: section.upper() in x, timetable.keys()))
+    breadth = timetable[offering]["breadthCategories"]
+    return breadth
+
+
 def get_times(session: str, section: str, timetable: json) -> Dict[str,
                                                                    List[str]]:
     """Get all times for a given session."""

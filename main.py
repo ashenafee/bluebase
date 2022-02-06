@@ -28,9 +28,21 @@ async def on_ready():
 
 
 @client.command()
-async def ping(ctx: Context):
-    """Output pong to the server."""
-    await ctx.send("Pong!")
+async def help(ctx):
+    """Shows all commands."""
+    embed = discord.Embed(
+        title="Bluebase Help",
+        description="A bot that helps you organize your UofT courses.",
+        color=0x00ff00
+    )
+    embed.add_field(name="!help", value="Shows this message.", inline=False)
+    embed.add_field(name="!add <CODE> <SECTION>", value="Adds a course to the channel the command was sent in.", inline=False)
+    embed.add_field(name="!remove <CODE>", value="Removes a course from the channel the command was sent in.", inline=False)
+    embed.add_field(name="!info <CODE> <SECTION>", value="Shows information about a course.", inline=False)
+    embed.add_field(name="!view <CODE> <SECTION> <MEETING>", value="Shows information about all meetings of a type for a course.", inline=False)
+    embed.add_field(name="!view_all", value="Shows information about all the courses in a channel.", inline=False)
+    embed.set_footer(text="Made by Team Base")
+    await ctx.send(embed=embed)
 
 
 @client.command()
@@ -39,7 +51,7 @@ async def add(ctx: Context, *args):
 
     if len(args) == 2 and args[1].upper() in ["F", "S", "Y"]:
         try:
-            course = cc.create_course(args[0], args[1])
+            course = cc.create_course(args[0].upper(), args[1].upper())
             embed = discord.Embed(title=f"Added '{course.code}' to '{ctx.guild}'",
                                   description=f"'{course.name}' has successfully been added to <#{ctx.channel.id}>.",
                                   color=0x00ff00)
@@ -75,92 +87,112 @@ async def remove(ctx: Context, *args):
 
 
 @client.command()
+async def info(ctx, *args):
+    """Shows information about a course."""
+    if len(args) == 2 and args[1].upper() in ["F", "S", "Y"]:
+        try:
+            course = cc.create_course(args[0].upper(), args[1].upper())
+            embed = discord.Embed(title=f"{course.code}", description=f"{course.name}", color=0x00ff00)
+            embed.add_field(name="Description", value=f"{course.description}", inline=False)
+            embed.add_field(name="Prerequisites", value=f"{course.prereqs}", inline=False)
+            embed.add_field(name="Corequisites", value=f"{course.coreqs}", inline=False)
+            embed.add_field(name="Exclusions", value=f"{course.exclusions}", inline=False)
+            embed.add_field(name="Breadth", value=f"{course.breadth}", inline=False)
+            await ctx.send(embed=embed)
+        except ValueError:
+            embed = discord.Embed(title="Error", description=f"Section '{args[1].upper()}' does not exist for '{args[0].upper()}'.", color=0xff0000)
+            await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(title="Error", description="Invalid usage.", color=0xff0000)
+        embed.add_field(name="Valid usage", value="`!info <CODE> <SECTION>`", inline=False)
+        embed.add_field(name="Valid sections", value="`F`, `S`, `Y`", inline=False)
+        await ctx.send(embed=embed)
+
+
+@client.command()
 async def view(ctx, *args):
     """Shows the course's lec/pra/tut sections."""
-    course = cc.create_course(args[0].upper(), args[1].upper())
-
-    """
-    this also works but exceptions mess up
     if len(args) != 3 or args[2].upper() not in ["LEC", "PRA", "TUT"]:
-        embed = discord.Embed(title="Error", description="Invalid section type.", color=0xff0000)
+        embed = discord.Embed(title="Error", description="Invalid input.", color=0xff0000)
         embed.add_field(name="Valid usage", value="`!view <CODE> <SECTION> <TYPE>`", inline=False)
         embed.add_field(name="Valid sections", value="`F`, `S`, `Y`", inline=False)
         embed.add_field(name="Valid types", value="`LEC`, `PRA`, `TUT`", inline=False)
         await ctx.send(embed=embed)
+    else:
+        try:
+            course = cc.create_course(args[0].upper(), args[1].upper())
+        except ValueError or IndexError:
+            embed = discord.Embed(title="Error",
+                                  description=f"Section '{args[1].upper()}' does not exist for '{args[0].upper()}'.",
+                                  color=0xff0000)
+            await ctx.send(embed=embed)
 
-    try:
-        course = cc.create_course(args[0], args[1])
-    except ValueError or IndexError:
-        embed = discord.Embed(title="Error",
-                              description=f"Section '{args[1].upper()}' does not exist for '{args[0].upper()}'.",
-                              color=0xff0000)
-        await ctx.send(embed=embed)
-    """
+        embed = discord.Embed(title=course.code, description=course.name, color=0x00ff00)
 
-    embed = discord.Embed(title=course.code, description=course.name, color=0x00ff00)
-
-
-    if len(args) == 3 and args[2].upper() == "LEC":
-        lecs = ""
-        times = ""
-        instructors = ""
-        for lec in course.lec:
-            for time in lec.times:
-                times += time + ", "
-            for instructor in lec.instructors:
-                if instructor not in instructors:
-                    instructors += instructor + ", "
-            if ',' == instructors[-2]:
-                instructors = instructors[:-2]
-            if ',' == times[-2]:
-                times = times[:-2]
-            lecs += f"**{lec.code}** - {times}\n{instructors}\n"
+        if len(args) == 3 and args[2].upper() == "LEC":
+            lecs = ""
             times = ""
             instructors = ""
-        embed.add_field(name="Lectures", value=lecs, inline=False)
-        await ctx.send(embed=embed)
-
-    elif len(args) == 3 and args[2].upper() == "PRA":
-        pras = ""
-        times = ""
-        if course.pra == []:
-            new_embed = discord.Embed(title="Error", description="Practicals do not exist for this course.", color=0xff0000)
-            await ctx.send(embed=new_embed)
-        for pra in course.pra:
-            if len(pras) < 900:
-                for time in pra.times:
+            for lec in course.lec:
+                for time in lec.times:
                     times += time + ", "
-                if "," == times[-2]:
-                    times = times[:-2]
-                pras += f"**{pra.code}** - {times}\n"
-                times = ""
-        if len(pras) > 900:
-            pras += "...\n"
-        embed.add_field(name="Practicals", value=pras, inline=False)
-        await ctx.send(embed=embed)
-
-    elif len(args) == 3 and args[2].upper() == "TUT":
-        tuts = ""
-        times = ""
-        for tut in course.tut:
-            if len(tuts) < 900:
-                for time in tut.times:
-                    times += time + ", "
+                for instructor in lec.instructors:
+                    if instructor not in instructors:
+                        instructors += instructor + ", "
+                if ',' == instructors[-2]:
+                    instructors = instructors[:-2]
                 if ',' == times[-2]:
                     times = times[:-2]
-                tuts += f"**{tut.code}** - {times}\n"
+                lecs += f"**{lec.code}** - {times}\n{instructors}\n"
                 times = ""
-        if len(tuts) > 900:
-            tuts += "...\n"
-        embed.add_field(name="Tutorials", value=tuts, inline=False)
-        await ctx.send(embed=embed)
+                instructors = ""
+            embed.add_field(name="Lectures", value=lecs, inline=False)
+            await ctx.send(embed=embed)
 
-    else:
-        embed = discord.Embed(title="Error", description="Invalid section type.", color=0xff0000)
-        embed.add_field(name="Valid usage", value="`!view <CODE> <SECTION> <TYPE>`", inline=False)
-        embed.add_field(name="Valid sections", value="`F`, `S`, `Y`", inline=False)
-        embed.add_field(name="Valid types", value="`LEC`, `PRA`, `TUT`", inline=False)
-        await ctx.send(embed=embed)
+        elif len(args) == 3 and args[2].upper() == "PRA":
+            pras = ""
+            times = ""
+            if course.pra == []:
+                new_embed = discord.Embed(title="Error", description="Practicals do not exist for this course.", color=0xff0000)
+                await ctx.send(embed=new_embed)
+            for pra in course.pra:
+                if len(pras) < 900:
+                    for time in pra.times:
+                        times += time + ", "
+                    if "," == times[-2]:
+                        times = times[:-2]
+                    pras += f"**{pra.code}** - {times}\n"
+                    times = ""
+            if len(pras) > 900:
+                pras += "...\n"
+            embed.add_field(name="Practicals", value=pras, inline=False)
+            await ctx.send(embed=embed)
+
+        elif len(args) == 3 and args[2].upper() == "TUT":
+            tuts = ""
+            times = ""
+            if course.tut == []:
+                new_embed = discord.Embed(title="Error", description="Tutorials do not exist for this course.", color=0xff0000)
+                await ctx.send(embed=new_embed)
+            for tut in course.tut:
+                if len(tuts) < 900:
+                    for time in tut.times:
+                        times += time + ", "
+                    if ',' == times[-2]:
+                        times = times[:-2]
+                    tuts += f"**{tut.code}** - {times}\n"
+                    times = ""
+            if len(tuts) > 900:
+                tuts += "...\n"
+            embed.add_field(name="Tutorials", value=tuts, inline=False)
+            await ctx.send(embed=embed)
+
+        else:
+            embed = discord.Embed(title="Error", description="Invalid section type.", color=0xff0000)
+            embed.add_field(name="Valid usage", value="`!view <CODE> <SECTION> <TYPE>`", inline=False)
+            embed.add_field(name="Valid sections", value="`F`, `S`, `Y`", inline=False)
+            embed.add_field(name="Valid types", value="`LEC`, `PRA`, `TUT`", inline=False)
+            await ctx.send(embed=embed)
 
 
 @client.command()
@@ -174,4 +206,4 @@ async def view_all(ctx):
     await ctx.send(embed=embed)
 
 # Login to the bot
-client.run('OTM5NjE2NDQxODEwOTQ0MDUx.Yf7cAA.IFMQXPph3vv9HEZcgj2dv7CVnQk')
+client.run(TOKEN)

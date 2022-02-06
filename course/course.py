@@ -21,12 +21,35 @@ class Course:
         - Meeting instructor
     """
 
-    def __init__(self, code: str, name: str, section: str, lec: List[Lecture],
+    def __init__(self, code: str, name: str, section: str, description: str,
+                 prereqs: str, coreqs: str, exclusions: str, breadth: str, lec: List[Lecture],
                  tut: List[Tutorial], pra: List[Practical]):
         """Initialize a Course object."""
         self.code = code.upper()
         self.name = name
         self.section = section.upper()
+        self.description = description
+
+        if prereqs == "":
+            self.prereqs = "N/A"
+        else:
+            self.prereqs = prereqs
+
+        if coreqs == "":
+            self.coreqs = "N/A"
+        else:
+            self.coreqs = coreqs
+
+        if exclusions == "":
+            self.exclusions = "N/A"
+        else:
+            self.exclusions = exclusions
+
+        if breadth == "":
+            self.breadth = "N/A"
+        else:
+            self.breadth = breadth
+
         self.lec = lec
         self.tut = tut
         self.pra = pra

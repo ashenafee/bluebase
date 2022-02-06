@@ -1,10 +1,15 @@
 from typing import Any, List, Union, Tuple
 
+import re
+
 import parsers.parse_timetable as pt
 from course.course import Course
 from course.course import Practical
 from course.course import Tutorial
 from course.lecture import Lecture
+
+
+REMOVE_HTML = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
 
 def create_course(code: str, section: str) -> Course:
@@ -14,13 +19,29 @@ def create_course(code: str, section: str) -> Course:
     # Get course timetable
     timetable = pt.search_timetable(code)
 
-    timetable_keys = list(timetable.keys())
+    timetable_keys = ' '.join(list(timetable.keys()))
     flag = False
-    for key in timetable_keys:
-        if f"-{section}-" not in key:
-            flag = True
+    if f"-{section}-" not in timetable_keys:
+        flag = True
+
     if flag:
         raise ValueError("Section not found.")
+
+    # Get course description
+    description = pt.get_description(section, timetable)
+    description = re.sub(REMOVE_HTML, '', description)
+
+    # Get course prerequisites
+    prereqs = pt.get_prereqs(section, timetable)
+
+    # Get course corequisites
+    coreqs = pt.get_coreqs(section, timetable)
+
+    # Get course exclusions
+    exclusions = pt.get_exclusions(section, timetable)
+
+    # Get course breadth
+    breadth = pt.get_breadth(section, timetable)
 
     # Get code of specific sessional offering
     offering = next(filter(lambda x: section.upper() in x, timetable.keys()))
@@ -32,7 +53,8 @@ def create_course(code: str, section: str) -> Course:
     # For each meeting type, create either a new Lecture, Practical, or Tutorial
     lecs, pras, tuts = create_meetings(meeting_types, section, timetable)
 
-    return Course(code, timetable[offering]['courseTitle'], section, lecs,
+    return Course(code, timetable[offering]['courseTitle'], section, description, prereqs,
+                  coreqs, exclusions, breadth, lecs,
                   tuts, pras)
 
 
