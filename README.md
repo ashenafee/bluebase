@@ -6,6 +6,17 @@ Bluebase is a Discord bot for UofT-St.George campus students to make sure they s
 can add the bot to a server and then add, remove and view courses with their lecture, practicals and tutorial timings.
 Since this a Discord bot, all of its functionality is available on Discord only.
 
+## Usage
+
+| Command                            | Parameters                                                                                              | Effect                                                       |
+|------------------------------------|---------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
+| `!help`                            | None                                                                                                    | Shows a help message with all commands.                      |
+| `!add <CODE> <SECTION>`            | `CODE`: Course code (i.e. BCH311)<br/> `SECTION`: Course section (i.e. S)                                    | Adds a course to the channel which the message was sent in.  |
+| `!remove <CODE>`                   | `CODE`: Course code (i.e. BCH311)                                                                       | Removes a course from the channel the message was sent in.   |
+| `!info <CODE> <SECTION>`           | `CODE`: Course code (i.e. BCH311)<br/> `SECTION`: Course section (i.e. S)                                    | Shows information about a course.                            |
+| `!view <CODE> <SECTION> <MEETING>` | `CODE`: Course code (i.e. BCH311)<br/> `SECTION`: Course section (i.e. S)<br/> `MEETING`: Meeting type (i.e. LEC) | Shows information about all meetings of a type for a course. |
+| `!view_all`                        | None                                                                                                    | Shows information about all the courses in a channel.        |
+
 ## Scenario walk-through
 
 You're a student with a wide range of courses, although, some relate to each other in one way or another. However, it
