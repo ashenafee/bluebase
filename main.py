@@ -28,12 +28,6 @@ async def on_ready():
 
 
 @client.command()
-async def ping(ctx: Context):
-    """Output pong to the server."""
-    await ctx.send("Pong!")
-
-
-@client.command()
 async def add(ctx: Context, *args):
     """Add a course to the server."""
     course = cc.create_course(args[0], args[1])
@@ -43,17 +37,6 @@ async def add(ctx: Context, *args):
     jdb.save_to_json(ctx.channel.id, course.code)
 
     await ctx.send(embed=embed)
-
-
-@client.command()
-async def view_all(ctx: Context):
-    """View a course."""
-    course = jdb.get_from_json(ctx.channel.id)
-    embed = discord.Embed(title=f"Courses for '{ctx.guild}:{ctx.channel}'",
-                          description=f"",
-                          color=0x00ff00)
-    await ctx.send(embed=embed)
-
 
 
 # Login to the bot
