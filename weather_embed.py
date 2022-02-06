@@ -3,7 +3,7 @@ from discord.ext import commands
 import parse_weather_data as w_data
 from datetime import date
 
-TOKEN = 'OTM5NTk1NDkwODY4MjE5OTE0.Yf7IfQ.2Z8FjcIXa6d9FjR3IYvuOwjfhE4'
+TOKEN = 'YOUR_TOKEN_HERE'
 client = commands.Bot(command_prefix='+')
 
 
@@ -21,12 +21,12 @@ async def display(ctx):
         description=weather_stats,
         colour=discord.colour.Colour.blue()
     )
-    embed.add_field()
+
     embed.set_footer(text='this is the footer')
     embed.set_image(url='https://media.globalnews.ca/videostatic/621/967/2016-03-08T17-14-44.133Z--1280x720.jpg')
     embed.set_thumbnail(url='https://media.globalnews.ca/videostatic/621/967/2016-03-08T17-14-44.133Z--1280x720.jpg')
     embed.set_author(name='Bluebot')
-    embed.add_field(name='!weather', value='Here is your forecast', inline=True)
+    embed.add_field(name='Weather', value='Here is your forecast', inline=True)
 
     await ctx.run(embed=embed)
 
