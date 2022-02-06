@@ -24,9 +24,9 @@ class Course:
     def __init__(self, code: str, name: str, section: str, lec: List[Lecture],
                  tut: List[Tutorial], pra: List[Practical]):
         """Initialize a Course object."""
-        self.code = code
+        self.code = code.upper()
         self.name = name
-        self.section = section
+        self.section = section.upper()
         self.lec = lec
         self.tut = tut
         self.pra = pra
